@@ -4,28 +4,33 @@
 #include <QGridLayout>
 
 std::pair <QString, QString> make_path (BinarySignal &sig) {
-    QString up_path;
-    QString down_path;
+    QString up_path = "";
+    QString down_path = "";
 
     auto str = sig.plot();
 
-    QString fire = QString::fromUtf8("🔥");
+    QString dynamite = QString::fromUtf8("🧨");
     QString chain = QString::fromUtf8("⛓");
 
     for (std::size_t i = 0; i < str.size(); i++) {
         if (str.at(i) == '-') {
-            up_path += fire;
+            if (i == 0) up_path = "🔥";
+            else up_path += dynamite;
             down_path += chain;
         }
         else if (str.at(i) == '_') {
-            up_path += " ";
-            down_path += "_";
+            if (i == 0) { down_path = "💥";}
+            else down_path += "_";
+            up_path += "  ";
         }
         else {
-            up_path += " ";
+            up_path += "  ";
             down_path += str.at(i);
         }
     }
+
+    //qDebug() << up_path;
+    //qDebug() << down_path;
 
     return std::make_pair(up_path, down_path);
 }
@@ -33,18 +38,9 @@ std::pair <QString, QString> make_path (BinarySignal &sig) {
 void Fire_Path::update () {
     auto pair = make_path(sig_fire);
 
-    if (ascent == Ascent::UP) {
-        path.first->setText(pair.first.insert(0, ' '));
-        path.second->setText(pair.second.insert(0, '/'));
-    }
-    else if (ascent == Ascent::DOWN) {
-        path.first->setText(pair.first.insert(0, ' '));
-        path.second->setText(pair.second.insert(0, '\\'));
-    }
-    else {
-        path.first->setText(pair.first);
-        path.second->setText(pair.second);
-    }
+    path.first->setText(pair.first);
+    path.second->setText(pair.second);
+
 }
 
 Fire_Path::Fire_Path (std::size_t path_len, QWidget *parent, std::size_t x, std::size_t y) : sig_fire (get_rand_game_sig(path_len)), len (path_len) {
@@ -54,34 +50,43 @@ Fire_Path::Fire_Path (std::size_t path_len, QWidget *parent, std::size_t x, std:
     path.second = new QLabel(pair.second, parent);
     auto label = new QLabel(parent);
 
-    label->setStyleSheet("background-color: #000000");
     path.first->setStyleSheet("background-color: #000000");
     path.second->setStyleSheet("background-color: #000000");
 
+    std::size_t w = 800;
+    std::size_t h = 60;
+
     label->move(x, y);
-    label->setFixedWidth(300);
-    path.first->move(x, y+34);
-    path.first->setFixedWidth(300);
-    path.second->move(x, y+69);
-    path.second->setFixedWidth(300);
+    label->setFixedWidth(w);
+    label->setFixedHeight(2*h);
+    label->setText("Sanctified by Dynamite");
+    label->setStyleSheet("QLabel { color : red; background-color: #000000}");
+    label->setAlignment(Qt::Alignment(Qt::AlignCenter));
+
+    path.first->move(x, y+2*h);
+    path.first->setFixedWidth(w);
+    path.first->setFixedHeight(h);
+
+    path.second->move(x, y+3*h);
+    path.second->setFixedWidth(w);
+    path.second->setFixedHeight(h);
 };
 
 void Fire_Path::step () {
+
     if (sig_fire.getSize()) {
-        bool prev = sig_fire[1];
         sig_fire.delete_signal(1, 1);
-        if (prev < sig_fire[1]) ascent = Ascent::UP;
-        else if (prev > sig_fire[1]) ascent = Ascent::DOWN;
-        else ascent = Ascent::NO;
 
         update();
     }
     else {
-        path.first->setText("THE END");
+        path.first->setText("💥💥💥 YOU WIN! WOW! 💥💥💥");
+        path.first->setAlignment(Qt::Alignment(Qt::AlignHCenter));
     }
 };
 
 void Fire_Path::restart () {
+    path.first->setAlignment(Qt::Alignment());
     sig_fire = get_rand_game_sig(len);
     update();
 }

@@ -35,7 +35,6 @@ Q_OBJECT
     BinarySignal sig_fire;
     std::pair <QLabel*, QLabel*> path;
     std::size_t len = 0;
-    Ascent ascent = Ascent::NO;
 
     void update ();
 
