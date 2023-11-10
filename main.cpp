@@ -21,17 +21,21 @@ int main(int argc, char *argv[])
 
     std::size_t b_sz = 50;
 
-    Fire_Path path(20, &win, 100, 100);
+    Fire_Path path(10, &win, 100, 100);
 
     QPushButton *b_quit = new QPushButton ("Exit", &win);
     b_quit->setGeometry(win_w - b_sz - 10, 10, b_sz, b_sz);
     b_quit->setStyleSheet("background-color: red");
     win.connect(b_quit, SIGNAL (clicked()), a.instance(), SLOT (quit()));
 
-    QPushButton *b_light = new QPushButton ("light", &win);
-    b_light->setGeometry(30, 90, b_sz, b_sz);
-    b_light->setStyleSheet("background-color: red");
-    win.connect(b_light, SIGNAL (clicked()), &path, SLOT (step()));
+    QPushButton *b_jmp = new QPushButton ("jump", &win);
+    b_jmp->setGeometry(30, 90, b_sz, b_sz);
+    b_jmp->setStyleSheet("background-color: red");
+    win.connect(b_jmp, SIGNAL (clicked()), &path, SLOT (step()));
+    QPushButton *b_go = new QPushButton ("go", &win);
+    b_go->setGeometry(30, b_jmp->y()+b_jmp->height()+10, b_sz, b_sz);
+    b_go->setStyleSheet("background-color: red");
+    win.connect(b_go, SIGNAL (clicked()), &path, SLOT (step()));
 
     QPushButton *b_new = new QPushButton ("New Game", &win);
     b_new->setGeometry(30, 10, 3*b_sz, b_sz);

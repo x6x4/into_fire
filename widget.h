@@ -5,6 +5,8 @@
 #include <QLabel>
 #include <random>
 #include "/home/cracky/oop_lab2_application/BinarySignal/BinarySignal.h"
+#include "qelapsedtimer.h"
+#include "qwidget.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -35,6 +37,8 @@ Q_OBJECT
     BinarySignal sig_fire;
     std::pair <QLabel*, QLabel*> path;
     std::size_t len = 0;
+    QElapsedTimer game_time;
+    bool happy_end = 1;
 
     void update ();
 
